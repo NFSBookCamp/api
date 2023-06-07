@@ -34,6 +34,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Account $account = null;
 
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
+
     public function getId(): ?int
     {
         return $this->id;

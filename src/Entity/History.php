@@ -11,6 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: HistoryRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class History implements DatedInterface, SlugInterface
 {
     use DatedTrait;
@@ -37,6 +38,17 @@ class History implements DatedInterface, SlugInterface
 
     #[ORM\Column(nullable: true)]
     private ?int $room_booking_delay = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
+
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        $this->setSlug($this->getRoom()->getSlug());
+    }
 
     public function getId(): ?int
     {

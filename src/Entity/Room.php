@@ -7,14 +7,20 @@ use App\Entity\Common\DatedTrait;
 use App\Entity\Common\SlugInterface;
 use App\Entity\Common\SlugTrait;
 use App\Repository\RoomRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Room implements DatedInterface, SlugInterface
 {
     use DatedTrait;
     use SlugTrait;
+
+    public const ROOM_STATUS_BOOKED = 'reserve';
+    public const ROOM_STATUS_VACANT = 'libre';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -41,6 +47,22 @@ class Room implements DatedInterface, SlugInterface
 
     #[ORM\ManyToOne]
     private ?Discipline $discipline = null;
+
+    #[ORM\ManyToMany(targetEntity: Account::class)]
+    private Collection $participants;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+        $this->participants = new ArrayCollection();
+    }
+
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        $slug = $this->slugify($this->getNumber());
+        $this->setSlug($slug);
+    }
 
     public function getId(): ?int
     {
@@ -127,6 +149,30 @@ class Room implements DatedInterface, SlugInterface
     public function setDiscipline(?Discipline $discipline): self
     {
         $this->discipline = $discipline;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Account>
+     */
+    public function getParticipants(): Collection
+    {
+        return $this->participants;
+    }
+
+    public function addParticipant(Account $participant): self
+    {
+        if (!$this->participants->contains($participant)) {
+            $this->participants->add($participant);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipant(Account $participant): self
+    {
+        $this->participants->removeElement($participant);
 
         return $this;
     }
