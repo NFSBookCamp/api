@@ -11,6 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DisciplineRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Discipline implements DatedInterface, SlugInterface
 {
     use DatedTrait;
@@ -29,6 +30,18 @@ class Discipline implements DatedInterface, SlugInterface
 
     #[ORM\Column(nullable: true)]
     private ?int $time = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
+
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        $slug = $this->slugify($this->getName());
+        $this->setSlug($slug);
+    }
 
     public function getId(): ?int
     {

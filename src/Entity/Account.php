@@ -12,10 +12,21 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AccountRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Account implements DatedInterface, SlugInterface
 {
     use DatedTrait;
     use SlugTrait;
+
+    public const ACCOUNT_STATUS_PENDING = 'pending';
+    public const ACCOUNT_STATUS_ACTIVE = 'active';
+    public const ACCOUNT_STATUS_DISABLED = 'disabled';
+    public const ACCOUNT_STATUS_DELETED = 'deleted';
+
+    public const ACCOUNT_TYPE_SUPER_ADMIN = 'Super administrateur';
+    public const ACCOUNT_TYPE_ADMIN = 'Administrateur';
+    public const ACCOUNT_TYPE_TEACHER = 'Intervenant';
+    public const ACCOUNT_TYPE_STUDENT = 'Etudiant';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -47,9 +58,20 @@ class Account implements DatedInterface, SlugInterface
     #[ORM\OneToMany(mappedBy: 'booked_by', targetEntity: Room::class)]
     private Collection $rooms;
 
+    #[ORM\Column(length: 255)]
+    private ?string $status = null;
+
     public function __construct()
     {
         $this->rooms = new ArrayCollection();
+        $this->createdAt = new \DateTime();
+    }
+
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        $slug = $this->slugify($this->getFirstname() . ' ' . $this->getLastname());
+        $this->setSlug($slug);
     }
 
     public function getId(): ?int
@@ -167,6 +189,18 @@ class Account implements DatedInterface, SlugInterface
                 $room->setBookedBy(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
