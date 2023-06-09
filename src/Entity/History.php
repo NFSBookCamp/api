@@ -10,6 +10,7 @@ use App\Repository\HistoryRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Table(name: "bookcamp_history")]
 #[ORM\Entity(repositoryClass: HistoryRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 class History implements DatedInterface, SlugInterface

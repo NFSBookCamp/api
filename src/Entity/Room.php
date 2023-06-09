@@ -12,6 +12,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Table(name: "bookcamp_rooms")]
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 class Room implements DatedInterface, SlugInterface
@@ -49,6 +50,7 @@ class Room implements DatedInterface, SlugInterface
     private ?Discipline $discipline = null;
 
     #[ORM\ManyToMany(targetEntity: Account::class)]
+    #[ORM\JoinTable(name: 'bookcamp_rooms_participants')]
     private Collection $participants;
 
     public function __construct()

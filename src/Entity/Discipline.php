@@ -10,6 +10,7 @@ use App\Repository\DisciplineRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Table(name: "bookcamp_disciplines")]
 #[ORM\Entity(repositoryClass: DisciplineRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 class Discipline implements DatedInterface, SlugInterface
