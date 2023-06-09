@@ -6,8 +6,9 @@ use App\Entity\History;
 use App\Entity\Room;
 use App\Event\UpdateRoomEvent;
 use App\Repository\HistoryRepository;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class RoomSubscriber
+class RoomSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly HistoryRepository $historyRepository,
