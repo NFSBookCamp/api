@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Room;
+use App\Event\UpdateRoomEvent;
 use App\Service\RoomFactory;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -73,6 +74,8 @@ class RoomController extends BaseController
             }
 
             $this->roomFactory->update($room, $data);
+
+            $this->eventDispatcher->dispatch(new UpdateRoomEvent($room), UpdateRoomEvent::NAME);
 
             return $this->getApiService()->setResponse($this->getApiService()->handleCircularReference($room));
         } catch (\throwable $e) {
