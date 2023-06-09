@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\ApiService;
 use Doctrine\Persistence\ManagerRegistry;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -22,7 +24,8 @@ class BaseController extends AbstractController
             ManagerRegistry::class,
             TokenStorageInterface::class,
             JWTTokenManagerInterface::class,
-            UserRepository::class
+            UserRepository::class,
+            ApiService::class,
         ]);
     }
 
@@ -99,5 +102,18 @@ class BaseController extends AbstractController
         }
 
         return $this->container->get(UserRepository::class);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    protected function getApiService(): ApiService
+    {
+        if (!$this->container->has(ApiService::class)) {
+            throw new \LogicException('The ApiService is not registered in your application.');
+        }
+
+        return $this->container->get(ApiService::class);
     }
 }
