@@ -32,7 +32,7 @@ class UserController extends BaseController
         }
     }
 
-    #[Route('/users/create', name: 'api_reset_create', methods: ['POST'])]
+    #[Route('/users/create', name: 'api_users_create', methods: ['POST'])]
     public function create(Request $request): Response
     {
         try {
