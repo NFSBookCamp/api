@@ -11,10 +11,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Table(name: "bookcamp_rooms")]
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity('number', message: 'Une salle existe déjà avec cet identifiant')]
 class Room implements DatedInterface, SlugInterface
 {
     use DatedTrait;
@@ -28,7 +31,7 @@ class Room implements DatedInterface, SlugInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $number = null;
 
     #[ORM\Column(length: 255)]

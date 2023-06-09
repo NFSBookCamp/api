@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class DisciplineController extends BaseController
 {
     public function __construct(
-        private readonly DisciplineFactory              $disciplineFactory,
+        private readonly DisciplineFactory        $disciplineFactory,
         private readonly EventDispatcherInterface $eventDispatcher
     )
     {
