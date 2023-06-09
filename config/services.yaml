@@ -26,3 +26,5 @@ services:
         autowire: true
     App\Service\UserFactory:
         autowire: true
+    App\Service\AccountFactory:
+        autowire: true
