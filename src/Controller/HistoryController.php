@@ -10,10 +10,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class HistoryController extends BaseController
 {
     #[Route('/history/', name: 'api_history', methods: 'GET')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         try {
-            $history = $this->getManagerRegistry()->getRepository(History::class)->findAll();
+            $history = $this->getManagerRegistry()->getRepository(History::class)->findAllFilteredQuery($request);
             $response = $this->getApiService()->setResponse($this->getApiService()->handleCircularReference($history));
             return $response;
         } catch (\throwable $e) {

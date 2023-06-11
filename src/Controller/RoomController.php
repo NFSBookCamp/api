@@ -21,10 +21,10 @@ class RoomController extends BaseController
     }
 
     #[Route('/rooms/', name: 'api_rooms', methods: 'GET')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         try {
-            $rooms = $this->getManagerRegistry()->getRepository(Room::class)->findAll();
+            $rooms = $this->getManagerRegistry()->getRepository(Room::class)->findAllFilteredQuery($request);
             $response = $this->getApiService()->setResponse($this->getApiService()->handleCircularReference($rooms));
             return $response;
         } catch (\throwable $e) {

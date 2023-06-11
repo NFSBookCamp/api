@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\History;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @extends ServiceEntityRepository<History>
@@ -39,20 +40,27 @@ class HistoryRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return History[] Returns an array of History objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('h')
-//            ->andWhere('h.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('h.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return History[] Returns an array of Discipline objects
+     */
+    public function findAllFilteredQuery(Request $request): array
+    {
+        $query = $this->createQueryBuilder('h');
+
+        $filters = $request->query->all();
+
+        if (!empty($filters)) {
+            foreach ($filters as $property => $value) {
+                $query->andWhere('h.' . $property . ' LIKE :property')
+                    ->setParameters(['property' => '%' . $value . '%']);
+            }
+        }
+
+        return $query
+            ->orderBy('h.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
 //    public function findOneBySomeField($value): ?History
 //    {

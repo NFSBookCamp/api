@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Room;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @extends ServiceEntityRepository<Room>
@@ -39,20 +40,27 @@ class RoomRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Room[] Returns an array of Room objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return Room[] Returns an array of Discipline objects
+     */
+    public function findAllFilteredQuery(Request $request): array
+    {
+        $query = $this->createQueryBuilder('r');
+
+        $filters = $request->query->all();
+
+        if (!empty($filters)) {
+            foreach ($filters as $property => $value) {
+                $query->andWhere('r.' . $property . ' LIKE :property')
+                    ->setParameters(['property' => '%' . $value . '%']);
+            }
+        }
+
+        return $query
+            ->orderBy('r.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
 //    public function findOneBySomeField($value): ?Room
 //    {

@@ -20,10 +20,10 @@ class DisciplineController extends BaseController
     }
 
     #[Route('/disciplines/', name: 'api_disciplines', methods: 'GET')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         try {
-            $disciplines = $this->getManagerRegistry()->getRepository(Discipline::class)->findAll();
+            $disciplines = $this->getManagerRegistry()->getRepository(Discipline::class)->findAllFilteredQuery($request);
             $response = $this->getApiService()->setResponse($this->getApiService()->handleCircularReference($disciplines));
             return $response;
         } catch (\throwable $e) {

@@ -20,12 +20,12 @@ class AccountController extends BaseController
     }
     
     #[Route('/accounts/', name: 'api_accounts', methods: 'GET')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         try {
-            $accounts = $this->getManagerRegistry()->getRepository(Account::class)->findAll();
-            $response = $this->getApiService()->setResponse($this->getApiService()->handleCircularReference($accounts));
-            return $response;
+            $accounts = $this->getManagerRegistry()->getRepository(Account::class)->findAllFilteredQuery($request);
+
+            return $this->getApiService()->setResponse($this->getApiService()->handleCircularReference($accounts));
         } catch (\throwable $e) {
             return $this->getApiService()->setResponse($e->getMessage(), $e);
         }

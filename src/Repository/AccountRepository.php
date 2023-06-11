@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Account;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @extends ServiceEntityRepository<Account>
@@ -39,20 +40,27 @@ class AccountRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Account[] Returns an array of Account objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return Account[] Returns an array of Discipline objects
+     */
+    public function findAllFilteredQuery(Request $request): array
+    {
+        $query = $this->createQueryBuilder('a');
+
+        $filters = $request->query->all();
+
+        if (!empty($filters)) {
+            foreach ($filters as $property => $value) {
+                $query->andWhere('a.' . $property . ' LIKE :property')
+                    ->setParameters(['property' => '%' . $value . '%']);
+            }
+        }
+
+        return $query
+            ->orderBy('a.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
 //    public function findOneBySomeField($value): ?Account
 //    {
