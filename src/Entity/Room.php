@@ -56,10 +56,14 @@ class Room implements DatedInterface, SlugInterface
     #[ORM\JoinTable(name: 'bookcamp_rooms_participants')]
     private Collection $participants;
 
+    #[ORM\OneToMany(mappedBy: 'room', targetEntity: History::class, cascade: ['remove'])]
+    private Collection $logs;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
         $this->participants = new ArrayCollection();
+        $this->logs = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -178,6 +182,36 @@ class Room implements DatedInterface, SlugInterface
     public function removeParticipant(Account $participant): self
     {
         $this->participants->removeElement($participant);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, History>
+     */
+    public function getLogs(): Collection
+    {
+        return $this->logs;
+    }
+
+    public function addLog(History $log): self
+    {
+        if (!$this->logs->contains($log)) {
+            $this->logs->add($log);
+            $log->setRoom($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistory(History $log): self
+    {
+        if ($this->logs->removeElement($log)) {
+            // set the owning side to null (unless already changed)
+            if ($log->getRoom() === $this) {
+                $log->setRoom(null);
+            }
+        }
 
         return $this;
     }

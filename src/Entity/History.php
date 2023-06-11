@@ -23,7 +23,7 @@ class History implements DatedInterface, SlugInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne()]
+    #[ORM\ManyToOne(inversedBy: 'logs')]
     private ?Room $room = null;
 
     #[ORM\ManyToOne()]
