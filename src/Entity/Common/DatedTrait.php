@@ -12,6 +12,12 @@ trait DatedTrait
     #[ORM\Column(type: 'datetime', nullable: true)]
     protected ?\DateTime $updatedAt = null;
 
+    #[ORM\PreUpdate]
+    public function preUpdate(): void
+    {
+        $this->setUpdatedAt(new \DateTime());
+    }
+
     public function getUpdatedAt(): ?\DateTime
     {
         return $this->updatedAt;

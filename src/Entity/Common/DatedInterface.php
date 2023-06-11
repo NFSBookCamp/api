@@ -11,4 +11,6 @@ interface DatedInterface
     public function getUpdatedAt(): ?\DateTime;
 
     public function setUpdatedAt(?\DateTime $updatedAt): self;
+
+    public function preUpdate(): void;
 }
