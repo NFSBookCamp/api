@@ -20,6 +20,8 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
+    use CommonRepositoryTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
@@ -50,17 +52,13 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         $query = $this->createQueryBuilder('u');
 
-        $filters = $request->query->all();
+        $data = $request->query->all();
 
-        if (!empty($filters)) {
-            foreach ($filters as $property => $value) {
-                $query->andWhere('u.' . $property . ' LIKE :property')
-                    ->setParameters(['property' => '%' . $value . '%']);
-            }
+        if (!empty($data)) {
+            $this->filterRequestQuery($query, $data, 'u');
         }
 
         return $query
-            ->orderBy('u.id', 'DESC')
             ->getQuery()
             ->getResult();
     }

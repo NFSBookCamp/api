@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class HistoryRepository extends ServiceEntityRepository
 {
+    use CommonRepositoryTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, History::class);
@@ -47,17 +49,13 @@ class HistoryRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('h');
 
-        $filters = $request->query->all();
+        $data = $request->query->all();
 
-        if (!empty($filters)) {
-            foreach ($filters as $property => $value) {
-                $query->andWhere('h.' . $property . ' LIKE :property')
-                    ->setParameters(['property' => '%' . $value . '%']);
-            }
+        if (!empty($data)) {
+            $this->filterRequestQuery($query, $data, 'h');
         }
 
         return $query
-            ->orderBy('h.id', 'DESC')
             ->getQuery()
             ->getResult();
     }

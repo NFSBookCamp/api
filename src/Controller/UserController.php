@@ -19,13 +19,15 @@ class UserController extends BaseController
     {
     }
 
-    #[Route('/users/', name: 'api_users', methods: 'GET')]
+    #[Route('/users', name: 'api_users', methods: 'GET')]
     public function index(Request $request): Response
     {
         try {
             $users = $this->getUserRepository()->findAllFilteredQuery($request);
 
-            return $this->getApiService()->setResponse($this->getApiService()->handleCircularReference($users));
+            $response = $this->getApiService()->setResponse($this->getApiService()->handleCircularReference($users));
+            $response->headers->set('Content-Range', 'users 0-20/' . count($users));
+            return $response;
         } catch (\throwable $e) {
             return $this->getApiService()->setResponse($e->getMessage(), $e);
         }

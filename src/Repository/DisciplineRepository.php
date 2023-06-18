@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class DisciplineRepository extends ServiceEntityRepository
 {
+    use CommonRepositoryTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Discipline::class);
@@ -47,17 +49,13 @@ class DisciplineRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('d');
 
-        $filters = $request->query->all();
+        $data = $request->query->all();
 
-        if (!empty($filters)) {
-            foreach ($filters as $property => $value) {
-                $query->andWhere('d.' . $property . ' LIKE :property')
-                    ->setParameters(['property' => '%' . $value . '%']);
-            }
+        if (!empty($data)) {
+            $this->filterRequestQuery($query, $data, 'd');
         }
 
         return $query
-            ->orderBy('d.id', 'DESC')
             ->getQuery()
             ->getResult();
     }

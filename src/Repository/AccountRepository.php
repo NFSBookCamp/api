@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class AccountRepository extends ServiceEntityRepository
 {
+    use CommonRepositoryTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Account::class);
@@ -47,17 +49,13 @@ class AccountRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('a');
 
-        $filters = $request->query->all();
+        $data = $request->query->all();
 
-        if (!empty($filters)) {
-            foreach ($filters as $property => $value) {
-                $query->andWhere('a.' . $property . ' LIKE :property')
-                    ->setParameters(['property' => '%' . $value . '%']);
-            }
+        if (!empty($data)) {
+            $this->filterRequestQuery($query, $data, 'a');
         }
 
         return $query
-            ->orderBy('a.id', 'DESC')
             ->getQuery()
             ->getResult();
     }

@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class RoomRepository extends ServiceEntityRepository
 {
+    use CommonRepositoryTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Room::class);
@@ -47,17 +49,13 @@ class RoomRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('r');
 
-        $filters = $request->query->all();
+        $data = $request->query->all();
 
-        if (!empty($filters)) {
-            foreach ($filters as $property => $value) {
-                $query->andWhere('r.' . $property . ' LIKE :property')
-                    ->setParameters(['property' => '%' . $value . '%']);
-            }
+        if (!empty($data)) {
+            $this->filterRequestQuery($query, $data, 'r');
         }
 
         return $query
-            ->orderBy('r.id', 'DESC')
             ->getQuery()
             ->getResult();
     }
