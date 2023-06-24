@@ -28,6 +28,12 @@ services:
         autowire: true
     App\Service\AccountFactory:
         autowire: true
+    App\Service\DisciplineFactory:
+        autowire: true
+    App\Service\RoomFactory:
+        autowire: true
+    App\Service\MailerService:
+        autowire: true
 
     App\EventListener\JWTCreatedListener:
         tags:

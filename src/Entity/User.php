@@ -35,6 +35,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Account $account = null;
 
+    /**
+     * @var string
+     */
+    #[ORM\Column]
+    private ?string $resetToken = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    protected ?\DateTime $lastLoggedIn = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -125,5 +134,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
         $this->account = $account;
 
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    /**
+     * @param string|null $resetToken
+     */
+    public function setResetToken(?string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastLoggedIn(): ?\DateTime
+    {
+        return $this->lastLoggedIn;
+    }
+
+    /**
+     * @param \DateTime|null $lastLoggedIn
+     */
+    public function setLastLoggedIn(?\DateTime $lastLoggedIn): void
+    {
+        $this->lastLoggedIn = $lastLoggedIn;
     }
 }
