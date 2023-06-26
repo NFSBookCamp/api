@@ -32,6 +32,7 @@ class Room implements DatedInterface, SlugInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
+    #[Assert\NotBlank(message: "Cette valeur ne peut pas être vide")]
     private ?string $number = null;
 
     #[ORM\Column(length: 255)]

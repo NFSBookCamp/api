@@ -9,6 +9,7 @@ use App\Entity\Common\SlugTrait;
 use App\Repository\DisciplineRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Table(name: "bookcamp_disciplines")]
 #[ORM\Entity(repositoryClass: DisciplineRepository::class)]
@@ -24,12 +25,14 @@ class Discipline implements DatedInterface, SlugInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Cette valeur ne peut pas être vide")]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\NotBlank(message: "Cette valeur ne peut pas être vide")]
     private ?int $time = null;
 
     public function __construct()

@@ -9,6 +9,7 @@ use App\Entity\Common\SlugTrait;
 use App\Repository\HistoryRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Table(name: "bookcamp_history")]
 #[ORM\Entity(repositoryClass: HistoryRepository::class)]

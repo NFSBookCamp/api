@@ -8,6 +8,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Table(name: "bookcamp_users")]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -21,6 +22,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\Unique(message: "Un utilisateur existe déjà avec cette adresse email")]
+    #[Assert\NotBlank(message: "Cette valeur ne peut pas être vide")]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -30,15 +33,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank(message: "Cette valeur ne peut pas être vide")]
+    #[Assert\Regex(
+        pattern: "/^(?=.*\d)(?=.*[A-Z])(?=.*[@#$%])(?!.*(.)\1{2}).*[a-z]/m",
+        message: "Votre mot de passe doit comporter au moins huit caractères, dont des lettres majuscules et minuscules, un chiffre et un symbole.",
+        match: true
+    )]
     private ?string $password = null;
 
+    #[Assert\NotBlank(message: "Cette valeur ne peut pas être vide")]
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Account $account = null;
 
     /**
      * @var string
      */
-    #[ORM\Column]
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $resetToken = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]

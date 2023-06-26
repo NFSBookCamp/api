@@ -76,7 +76,12 @@ class UserController extends BaseController
 
             $this->userFactory->update($user, $data);
 
-            return $this->getApiService()->setResponse($this->getApiService()->handleCircularReference($user));
+            $response = $this->getApiService()->setResponse($this->getApiService()->handleCircularReference($user));
+
+            $token = $this->getJWTTokenManagerInterface()->create($user);
+            $response->setContent(json_encode(['token' => $token]));
+
+            return $response;
         } catch (\throwable $e) {
             return $this->getApiService()->setResponse($e->getMessage(), $e);
         }

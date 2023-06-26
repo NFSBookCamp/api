@@ -4,13 +4,16 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserFactory
 {
     public function __construct(
         private readonly UserPasswordHasherInterface $passwordHasher,
-        private readonly UserRepository              $userRepository
+        private readonly UserRepository              $userRepository,
+        private readonly ValidatorInterface          $validator
     )
     {}
 
@@ -18,16 +21,21 @@ class UserFactory
     {
         $entity = (new User())
             ->setEmail($data['email']);
-        $entity
-            ->setPassword($this->passwordHasher->hashPassword(
+        if ($data['plainPassword'] !== $data['confirmPassword']) {
+            throw new \Exception('Les mots de passe doivent correspondre');
+        } else {
+            $entity->setPassword($this->passwordHasher->hashPassword(
                 $entity,
                 $data['plainPassword']
             ));
+        }
 
         if (!empty($data['roles'])) {
             $entity
                 ->setRoles($data['roles']);
         }
+
+        $this->validator->validate($entity);
 
         $this->userRepository->save($entity, true);
 
@@ -45,15 +53,17 @@ class UserFactory
         }
 
         if (!empty($data['plainPassword'])) {
-            if ($data['plainPassword'] !== $data['confirmPassword']) {
-                throw new \Exception('Les mots de passe doivent correspondre');
+            if (!$this->passwordHasher->isPasswordValid($entity, $data['password'])) {
+                throw new AccessDeniedHttpException('L\'ancien mot de passe est incorrect');
             } else {
                 $entity->setPassword($this->passwordHasher->hashPassword(
                     $entity,
-                    $data['plainPassword']
+                    $data['new_password']
                 ));
             }
         }
+
+        $this->validator->validate($entity);
 
         $this->userRepository->save($entity, true);
 

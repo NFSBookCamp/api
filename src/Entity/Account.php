@@ -9,6 +9,7 @@ use App\Entity\Common\SlugTrait;
 use App\Repository\AccountRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: "bookcamp_accounts")]
@@ -35,15 +36,20 @@ class Account implements DatedInterface, SlugInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Cette valeur ne peut pas être vide")]
     private ?string $type = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(message: "Cette valeur ne peut pas être vide")]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(message: "Cette valeur ne peut pas être vide")]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(message: "Cette valeur ne peut pas être vide")]
+    #[Assert\Unique(message: "Un compte existe déjà avec cette adresse email")]
     private ?string $email = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -54,18 +60,21 @@ class Account implements DatedInterface, SlugInterface
 
     #[ORM\OneToOne(inversedBy: 'account', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank(message: "Le compte doit être relié à un utilisateur")]
     private ?User $user = null;
 
     #[ORM\OneToMany(mappedBy: 'booked_by', targetEntity: Room::class)]
     private Collection $rooms;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Cette valeur ne peut pas être vide")]
     private ?string $status = null;
 
     public function __construct()
     {
         $this->rooms = new ArrayCollection();
         $this->createdAt = new \DateTime();
+        $this->email = $this->getUser()->getEmail();
     }
 
     #[ORM\PrePersist]
@@ -210,9 +219,11 @@ class Account implements DatedInterface, SlugInterface
     {
         return [
             'id' => $this->getId(),
+            'userId' => $this->getUser()->getId(),
             'lastname' => $this->getLastname(),
             'firstname' => $this->getFirstname(),
             'address' => $this->getAddress(),
+            'email' => $this->getUser()->getEmail(),
             'phone' => $this->getPhone(),
             'status' => $this->getStatus(),
             'type' => $this->getType(),

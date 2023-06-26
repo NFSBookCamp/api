@@ -5,12 +5,14 @@ namespace App\Service;
 use App\Entity\Account;
 use App\Repository\AccountRepository;
 use App\Repository\UserRepository;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AccountFactory
 {
     public function __construct(
-        private readonly AccountRepository $accountRepository,
-        private readonly UserRepository    $userRepository
+        private readonly AccountRepository  $accountRepository,
+        private readonly UserRepository     $userRepository,
+        private readonly ValidatorInterface $validator
     )
     {
     }
@@ -40,6 +42,8 @@ class AccountFactory
         if (!empty($data['phone'])) {
             $entity->setPhone($data['phone']);
         }
+
+        $this->validator->validate($entity);
 
         $user->setAccount($entity);
         $this->accountRepository->save($entity, true);
@@ -92,6 +96,8 @@ class AccountFactory
         if (!empty($data['status'])) {
             $entity->setType($data['status']);
         }
+
+        $this->validator->validate($entity);
 
         $this->accountRepository->save($entity, true);
 
