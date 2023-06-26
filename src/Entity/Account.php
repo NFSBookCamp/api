@@ -205,4 +205,20 @@ class Account implements DatedInterface, SlugInterface
 
         return $this;
     }
+
+    public function getData()
+    {
+        return [
+            'id' => $this->getId(),
+            'lastname' => $this->getLastname(),
+            'firstname' => $this->getFirstname(),
+            'address' => $this->getAddress(),
+            'phone' => $this->getPhone(),
+            'status' => $this->getStatus(),
+            'type' => $this->getType(),
+            'slug' => $this->getSlug(),
+            'createdAt' => $this->getCreatedAt(),
+            'updatedAt' => $this->getUpdatedAt()
+        ];
+    }
 }
