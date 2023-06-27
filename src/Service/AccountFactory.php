@@ -19,7 +19,7 @@ class AccountFactory
 
     public function create(mixed $data): Account
     {
-        $user = $this->userRepository->find($data['userId']);
+        $user = $this->userRepository->findOneBy(['email' => $data['email']]);
 
         $entity = (new Account())
             ->setStatus(Account::ACCOUNT_STATUS_PENDING)

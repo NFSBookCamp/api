@@ -51,9 +51,7 @@ class RoomRepository extends ServiceEntityRepository
 
         $data = $request->query->all();
 
-        if (!empty($data)) {
-            $this->filterRequestQuery($query, $data, 'r');
-        }
+        $this->filterRequestQuery($query, $data, 'r');
 
         return $query
             ->getQuery()

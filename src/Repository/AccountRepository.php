@@ -59,9 +59,7 @@ class AccountRepository extends ServiceEntityRepository
 
         $data = $request->query->all();
 
-        if (!empty($data)) {
-            $this->filterRequestQuery($query, $data, 'a');
-        }
+        $this->filterRequestQuery($query, $data, 'a');
 
         if(!$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
             $query->andWhere('u.roles NOT LIKE :role')

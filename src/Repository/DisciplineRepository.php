@@ -51,9 +51,7 @@ class DisciplineRepository extends ServiceEntityRepository
 
         $data = $request->query->all();
 
-        if (!empty($data)) {
-            $this->filterRequestQuery($query, $data, 'd');
-        }
+        $this->filterRequestQuery($query, $data, 'd');
 
         return $query
             ->getQuery()

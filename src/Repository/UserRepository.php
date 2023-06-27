@@ -58,9 +58,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         $data = $request->query->all();
 
-        if (!empty($data)) {
-            $this->filterRequestQuery($query, $data, 'u');
-        }
+        $this->filterRequestQuery($query, $data, 'u');
 
         if(!$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
             $query->andWhere('u.roles NOT LIKE :role')

@@ -51,9 +51,7 @@ class HistoryRepository extends ServiceEntityRepository
 
         $data = $request->query->all();
 
-        if (!empty($data)) {
-            $this->filterRequestQuery($query, $data, 'h');
-        }
+        $this->filterRequestQuery($query, $data, 'h');
 
         return $query
             ->getQuery()
