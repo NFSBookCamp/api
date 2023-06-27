@@ -31,7 +31,7 @@ class History implements DatedInterface, SlugInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Discipline $discipline = null;
 
-    #[ORM\ManyToOne()]
+    #[ORM\ManyToOne(inversedBy: 'logs')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Account $booked_by = null;
 

@@ -70,11 +70,14 @@ class Account implements DatedInterface, SlugInterface
     #[Assert\NotBlank(message: "Cette valeur ne peut pas être vide")]
     private ?string $status = null;
 
+    #[ORM\OneToMany(mappedBy: 'booked_by', targetEntity: History::class, cascade: ['remove'])]
+    private Collection $logs;
+
     public function __construct()
     {
         $this->rooms = new ArrayCollection();
         $this->createdAt = new \DateTime();
-        $this->email = $this->getUser()->getEmail();
+        $this->email = $this->getUser()?->getEmail();
     }
 
     #[ORM\PrePersist]
@@ -223,7 +226,7 @@ class Account implements DatedInterface, SlugInterface
             'lastname' => $this->getLastname(),
             'firstname' => $this->getFirstname(),
             'address' => $this->getAddress(),
-            'email' => $this->getUser()->getEmail(),
+            'email' => $this->getUser()?->getEmail(),
             'phone' => $this->getPhone(),
             'status' => $this->getStatus(),
             'type' => $this->getType(),

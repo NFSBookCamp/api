@@ -6,6 +6,7 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -22,7 +23,10 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 {
     use CommonRepositoryTrait;
 
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+        ManagerRegistry                                $registry,
+        private readonly AuthorizationCheckerInterface $authorizationChecker
+    )
     {
         parent::__construct($registry, User::class);
     }
@@ -56,6 +60,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         if (!empty($data)) {
             $this->filterRequestQuery($query, $data, 'u');
+        }
+
+        if(!$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
+            $query->andWhere('u.roles NOT LIKE :role')
+                ->setParameter('role', '%ADMIN%');
         }
 
         return $query

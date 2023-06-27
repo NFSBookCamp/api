@@ -6,6 +6,7 @@ use App\Entity\Account;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @extends ServiceEntityRepository<Account>
@@ -19,7 +20,10 @@ class AccountRepository extends ServiceEntityRepository
 {
     use CommonRepositoryTrait;
 
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+        ManagerRegistry                                $registry,
+        private readonly AuthorizationCheckerInterface $authorizationChecker
+    )
     {
         parent::__construct($registry, Account::class);
     }
@@ -35,6 +39,10 @@ class AccountRepository extends ServiceEntityRepository
 
     public function remove(Account $entity, bool $flush = false): void
     {
+        foreach ($entity->getRooms() as $room) {
+            $room->setBookedBy(null);
+        }
+
         $this->getEntityManager()->remove($entity);
 
         if ($flush) {
@@ -53,6 +61,11 @@ class AccountRepository extends ServiceEntityRepository
 
         if (!empty($data)) {
             $this->filterRequestQuery($query, $data, 'a');
+        }
+
+        if(!$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
+            $query->andWhere('u.roles NOT LIKE :role')
+                ->setParameter('role', '%ADMIN%');
         }
 
         return $query

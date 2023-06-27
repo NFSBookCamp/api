@@ -61,7 +61,12 @@ class ApiService
         }
 
         $response->headers->set('Content-Type', 'application/json');
-        $response->setStatusCode(Response::HTTP_OK);
+
+        if($response->getStatusCode() === 200) {
+            $response->setStatusCode(Response::HTTP_OK);
+        } else {
+            $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
         return $response;
     }

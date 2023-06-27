@@ -77,10 +77,13 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
 
     private function getSuperAdminData(): iterable
     {
+        $faker = $this->fakerFactory;
+
         yield [
             'email' => self::SUPER_ADMIN,
             'plainPassword' => self::SUPER_ADMIN,
-            'roles' => ['ROLE_SUPER_ADMIN']
+            'roles' => ['ROLE_SUPER_ADMIN'],
+            'lastLoggedIn' => $faker->dateTimeBetween('-60 days', 'now')
         ];
     }
 
@@ -99,7 +102,8 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
             $data = [
                 'email' => $email,
                 'plainPassword' => $email,
-                'roles' => [$role]
+                'roles' => [$role],
+                'lastLoggedIn' => $faker->dateTimeBetween('-60 days', 'now')
             ];
             yield $data;
         }

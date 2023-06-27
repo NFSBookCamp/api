@@ -179,4 +179,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
     {
         $this->lastLoggedIn = $lastLoggedIn;
     }
+
+    public function isEnabled(): ?bool
+    {
+        if($this->getAccount()) {
+            return $this->getAccount()->getStatus() === Account::ACCOUNT_STATUS_ACTIVE;
+        }
+        return false;
+    }
 }

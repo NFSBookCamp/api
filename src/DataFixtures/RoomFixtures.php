@@ -78,18 +78,18 @@ class RoomFixtures extends Fixture implements DependentFixtureInterface, Fixture
     {
         for ($i = 0; $i < 20; $i++) {
             yield match ($i < 9) {
-                true => $this->getBookedRoomData(),
-                false => $this->getVacantRoomData()
+                true => $this->getBookedRoomData($i),
+                false => $this->getVacantRoomData($i)
             };
         }
     }
 
-    private function getBookedRoomData(): array
+    private function getBookedRoomData(int $i): array
     {
         $faker = $this->fakerFactory;
 
         return [
-            'number' => 'A'.((string)$faker->numberBetween(1, 2)).'0'. ((string)$faker->numberBetween(0, 9)),
+            'number' => $faker->randomLetter().((string)$faker->numberBetween(1, 2)).'0'. ((string)$faker->numberBetween(0, $i)),
             'caracteristics' => [
                 'places' => $faker->numberBetween(15, 30),
                 'materiel' => [
@@ -104,12 +104,12 @@ class RoomFixtures extends Fixture implements DependentFixtureInterface, Fixture
         ];
     }
 
-    private function getVacantRoomData(): array
+    private function getVacantRoomData(int $i): array
     {
         $faker = $this->fakerFactory;
 
         return [
-            'number' => 'B'.((string)$faker->numberBetween(1, 2)).'0'. ((string)$faker->numberBetween(0, 9)),
+            'number' => $faker->randomLetter().((string)$faker->numberBetween(1, 2)).'0'. ((string)$faker->numberBetween(0, $i)),
             'caracteristics' => [
                 'places' => $faker->numberBetween(15, 30),
                 'materiel' => [
