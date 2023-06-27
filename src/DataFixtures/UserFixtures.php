@@ -83,7 +83,8 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
             'email' => self::SUPER_ADMIN,
             'plainPassword' => self::SUPER_ADMIN,
             'roles' => ['ROLE_SUPER_ADMIN'],
-            'lastLoggedIn' => $faker->dateTimeBetween('-60 days', 'now')
+            'lastLoggedIn' => $faker->dateTimeBetween('-60 days', 'now'),
+            'enabled' => true
         ];
     }
 
@@ -91,7 +92,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
     {
         $faker = $this->fakerFactory;
 
-        for ($i = 0; $i < 100; ++$i) {
+        for ($i = 0; $i < 150; ++$i) {
             $role = match ($i % 5) {
                 0 => 'ROLE_ADMIN',
                 3, 1, 2, 4 => 'ROLE_USER'

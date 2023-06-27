@@ -86,6 +86,9 @@ final class AccountFixtures extends Fixture implements DependentFixtureInterface
                     ++$iStudent;
                     break;
             }
+            if ($entity->getStatus() === Account::ACCOUNT_STATUS_ACTIVE) {
+                $user->setEnabled(true);
+            }
             ++$i;
         }
 
@@ -125,16 +128,24 @@ final class AccountFixtures extends Fixture implements DependentFixtureInterface
 
     private function getData(): iterable
     {
-        for ($i = 0; $i < 99; ++$i) {
+        for ($i = 0; $i < 100; ++$i) {
             yield match ($i % 5) {
-                0 => $this->getAdminAccountData($i),
-                3 => $this->getStudentAccountData($i),
-                1, 2, 4 => $this->getTeacherAccountData($i)
+                0 => $this->getAdminAccountData($i, Account::ACCOUNT_STATUS_ACTIVE),
+                3 => $this->getStudentAccountData($i, Account::ACCOUNT_STATUS_ACTIVE),
+                1, 2, 4 => $this->getTeacherAccountData($i, Account::ACCOUNT_STATUS_ACTIVE)
+            };
+        }
+
+        for ($i = 100; $i < 150; ++$i) {
+            yield match ($i % 5) {
+                0 => $this->getAdminAccountData($i, Account::ACCOUNT_STATUS_PENDING),
+                3 => $this->getStudentAccountData($i, Account::ACCOUNT_STATUS_DISABLED),
+                1, 2, 4 => $this->getTeacherAccountData($i, Account::ACCOUNT_STATUS_PENDING)
             };
         }
     }
 
-    private function getAdminAccountData(int $i): array
+    private function getAdminAccountData(int $i, string $status): array
     {
         $faker = $this->fakerFactory;
 
@@ -145,11 +156,11 @@ final class AccountFixtures extends Fixture implements DependentFixtureInterface
             'lastname' => $faker->lastName(),
             'address' => $faker->address(),
             'phone' => $faker->phoneNumber(),
-            'status' => Account::ACCOUNT_STATUS_ACTIVE
+            'status' => $status
         ];
     }
 
-    private function getTeacherAccountData(int $i): array
+    private function getTeacherAccountData(int $i, string $status): array
     {
         $faker = $this->fakerFactory;
 
@@ -160,11 +171,11 @@ final class AccountFixtures extends Fixture implements DependentFixtureInterface
             'lastname' => $faker->lastName(),
             'address' => $faker->address(),
             'phone' => $faker->phoneNumber(),
-            'status' => Account::ACCOUNT_STATUS_ACTIVE
+            'status' => $status
         ];
     }
 
-    private function getStudentAccountData(int $i): array
+    private function getStudentAccountData(int $i, string $status): array
     {
         $faker = $this->fakerFactory;
 
@@ -175,7 +186,7 @@ final class AccountFixtures extends Fixture implements DependentFixtureInterface
             'lastname' => $faker->lastName(),
             'address' => $faker->address(),
             'phone' => $faker->phoneNumber(),
-            'status' => Account::ACCOUNT_STATUS_ACTIVE
+            'status' => $status
         ];
     }
 }

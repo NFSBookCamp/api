@@ -54,6 +54,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
     #[ORM\Column(type: 'datetime', nullable: true)]
     protected ?\DateTime $lastLoggedIn = null;
 
+    #[ORM\Column(type: 'boolean')]
+    protected bool $enabled = false;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -185,6 +188,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
         if($this->getAccount()) {
             return $this->getAccount()->getStatus() === Account::ACCOUNT_STATUS_ACTIVE;
         }
-        return false;
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): void
+    {
+        $this->enabled = $enabled;
     }
 }
