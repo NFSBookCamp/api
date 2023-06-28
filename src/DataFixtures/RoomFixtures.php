@@ -51,6 +51,7 @@ class RoomFixtures extends Fixture implements DependentFixtureInterface, Fixture
                 $entity->setDiscipline($discipline);
                 $entity->setBookingDelay($discipline->getTime());
                 $entity->addParticipant($student);
+                $entity->setReserved(true);
             }
 
             ++$i;

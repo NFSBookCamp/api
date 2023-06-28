@@ -49,6 +49,7 @@ class RoomFactory
                 $account = $this->accountRepository->find($data['accountId']);
                 $entity->setBookedBy($account);
                 $entity->setBookedAt(new \DateTime());
+                $entity->setReserved(true);
 
                 if (!empty($data['disciplineId'])) {
                     $discipline = $this->disciplineRepository->find($data['disciplineId']);
@@ -80,6 +81,7 @@ class RoomFactory
                 $entity->setBookedAt(null);
                 $entity->setDiscipline(null);
                 $entity->setBookingDelay(null);
+                $entity->setReserved(false);
             }
         }
 

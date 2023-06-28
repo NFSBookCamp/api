@@ -60,6 +60,9 @@ class Room implements DatedInterface, SlugInterface
     #[ORM\OneToMany(mappedBy: 'room', targetEntity: History::class, cascade: ['remove'])]
     private Collection $logs;
 
+    #[ORM\Column(type: 'boolean')]
+    protected bool $reserved = false;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -215,5 +218,18 @@ class Room implements DatedInterface, SlugInterface
         }
 
         return $this;
+    }
+
+    public function isReserved(): ?bool
+    {
+        if($this->getStatus()) {
+            $this->reserved = $this->getStatus() === self::ROOM_STATUS_BOOKED;
+        }
+        return $this->reserved;
+    }
+
+    public function setReserved(bool $reserved): void
+    {
+        $this->reserved = $reserved;
     }
 }
