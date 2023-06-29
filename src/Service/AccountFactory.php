@@ -94,7 +94,7 @@ class AccountFactory
         }
 
         if (!empty($data['status'])) {
-            $entity->setType($data['status']);
+            $entity->setStatus($data['status']);
         }
 
         $this->validator->validate($entity);
