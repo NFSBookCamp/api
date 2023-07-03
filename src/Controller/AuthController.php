@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\MailerService;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -10,7 +11,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AuthController extends BaseController
 {
-    public function __construct(private MailerService $mailer, private UserPasswordHasherInterface $passwordHasher)
+    public function __construct(
+        private MailerService $mailer,
+        private UserPasswordHasherInterface $passwordHasher
+    )
     {}
     #[Route('/api/check-email', methods: ['POST'])]
     public function checkEmail(Request $request): Response
@@ -55,10 +59,7 @@ class AuthController extends BaseController
             ]);
 
             if(!$user) {
-                return $this->json([
-                    'error' => true,
-                    'message' => 'Le token n\'est pas bon ou personne n\'existe avec cette adresse email.'
-                ]);
+                throw new AccessDeniedException('Le token n\'est pas bon ou personne n\'existe avec cette adresse email.');
             }
 
             return $this->json($token);
