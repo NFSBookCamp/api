@@ -101,7 +101,8 @@ class RoomFixtures extends Fixture implements DependentFixtureInterface, Fixture
                 ]
             ],
             'status' => Room::ROOM_STATUS_BOOKED,
-            'bookedAt' => $faker->dateTimeBetween('-15 days', 'now')
+            'bookedAt' => $faker->dateTimeBetween('-15 days', 'now'),
+            'bookedOn' => $faker->dateTimeBetween('now', '+15 days')
         ];
     }
 

@@ -41,6 +41,9 @@ class Room implements DatedInterface, SlugInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $booked_at = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $booked_on = null;
+
     #[ORM\Column(nullable: true)]
     private ?int $booking_delay = null;
 
@@ -231,5 +234,23 @@ class Room implements DatedInterface, SlugInterface
     public function setReserved(bool $reserved): void
     {
         $this->reserved = $reserved;
+    }
+
+    /**
+     * @return \DateTimeInterface|null
+     */
+    public function getBookedOn(): ?\DateTimeInterface
+    {
+        return $this->booked_on;
+    }
+
+    /**
+     * @param \DateTimeInterface|null $booked_on
+     */
+    public function setBookedOn(?\DateTimeInterface $booked_on): self
+    {
+        $this->booked_on = $booked_on;
+
+        return $this;
     }
 }
