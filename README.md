@@ -38,7 +38,7 @@ Utilisation locale
 symfony serve
 ```
 
-Requêter l'api à l'URL donnée (<http://localhost:8000> par défaut).
+**2** Requêter l'api à l'URL donnée (<http://localhost:8000> par défaut).
 
 Api live
 -----
