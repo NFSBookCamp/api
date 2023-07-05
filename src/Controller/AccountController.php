@@ -45,6 +45,18 @@ class AccountController extends BaseController
         }
     }
 
+    #[Route('/accounts/pending-count', methods: ['GET'])]
+    public function pendingCount(Request $request): Response
+    {
+        try {
+            $count = $this->getManagerRegistry()->getRepository(Account::class)->getAccountCountByStatus(Account::ACCOUNT_STATUS_PENDING);
+
+            return $this->getApiService()->setResponse($count);
+        } catch(\throwable $e) {
+            return $this->getApiService()->setResponse($e->getMessage(), $e);
+        }
+    }
+
     #[Route('/accounts/create', name: 'api_accounts_create', methods: ['POST'])]
     public function create(Request $request): Response
     {
