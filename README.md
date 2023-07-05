@@ -1,6 +1,4 @@
-WIP  
-Api BookCamp
-========================
+# Api BookCamp
 
 Prérequis
 ------------
@@ -16,7 +14,22 @@ cd bookcamp_api/
 composer install
 ```
 
-Utilisation
+Base de données
+------------
+
+__Création de la base de donnée__
+```bash
+symfony console doctrine:database:create
+```  
+```bash
+symfony console doctrine:migrations:migrate
+```  
+__Fixtures(fake datas)__
+```bash
+symfony console doctrine:fixtures:load
+```  
+
+Utilisation locale
 -----
 
 **1** Lancer le serveur symfony avec cette commande :
@@ -25,7 +38,12 @@ Utilisation
 symfony serve
 ```
 
-Accéder à l'URL donnée (<http://localhost:8000> par défaut).
+Requêter l'api à l'URL donnée (<http://localhost:8000> par défaut).
+
+Api live
+-----
+Api disponible à cette adresse : https://bookcamp.keepvibz.ovh/api  
+Documentation : https://documenter.getpostman.com/view/17771184/2s93sc3sDu
 
 [1]: https://symfony.com/doc/current/best_practices.html
 [2]: https://symfony.com/doc/current/setup.html#technical-requirements
