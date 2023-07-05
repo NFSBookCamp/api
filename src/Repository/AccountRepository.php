@@ -87,6 +87,20 @@ class AccountRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    /**
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function getAccountCountByStatus(string $status): int
+    {
+        return $this->createQueryBuilder('a')
+            ->select('count(a.id)')
+            ->andWhere('a.status = :status')
+            ->setParameter(':status', $status)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
 //    public function findOneBySomeField($value): ?Account
 //    {
 //        return $this->createQueryBuilder('a')

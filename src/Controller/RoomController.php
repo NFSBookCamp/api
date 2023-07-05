@@ -32,6 +32,18 @@ class RoomController extends BaseController
         }
     }
 
+    #[Route('/rooms/reserved-count', methods: ['GET'])]
+    public function pendingCount(Request $request): Response
+    {
+        try {
+            $count = $this->getManagerRegistry()->getRepository(Room::class)->getRoomCountByStatus(Room::ROOM_STATUS_BOOKED);
+
+            return $this->getApiService()->setResponse($count);
+        } catch(\throwable $e) {
+            return $this->getApiService()->setResponse($e->getMessage(), $e);
+        }
+    }
+
     #[Route('/rooms/create', name: 'api_rooms_create', methods: ['POST'])]
     public function create(Request $request): Response
     {

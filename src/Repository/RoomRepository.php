@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Room;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -56,6 +58,20 @@ class RoomRepository extends ServiceEntityRepository
         return $query
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function getRoomCountByStatus(string $status): int
+    {
+        return $this->createQueryBuilder('r')
+            ->select('count(r.id)')
+            ->andWhere('r.status = :status')
+            ->setParameter(':status', $status)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
 //    public function findOneBySomeField($value): ?Room
