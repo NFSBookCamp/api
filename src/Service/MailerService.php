@@ -10,7 +10,10 @@ use Symfony\Component\Mime\BodyRendererInterface;
 
 class MailerService
 {
-    public function __construct(private MailerInterface $mailer, private BodyRendererInterface $bodyRenderer)
+    public function __construct(
+        private MailerInterface $mailer,
+//        private BodyRendererInterface $bodyRenderer
+    )
     {}
 
     public function sendResetPasswordEmail(User $user, string $urlLink)
@@ -22,7 +25,7 @@ class MailerService
             ->context([
                 'urlLink' => $urlLink,
             ]);
-        $this->bodyRenderer->render($email);
+//        $this->bodyRenderer->render($email);
         $this->mailer->send($email);
     }
 }
