@@ -51,6 +51,10 @@ class RoomFactory
                 $entity->setBookedAt(new \DateTime());
                 $entity->setReserved(true);
 
+                if(!empty($data['bookedOn'])) {
+                    $entity->setBookedOn(new \DateTime($data['bookedOn']));
+                }
+
                 if (!empty($data['disciplineId'])) {
                     $discipline = $this->disciplineRepository->find($data['disciplineId']);
                     $entity->setDiscipline($discipline);
@@ -79,6 +83,7 @@ class RoomFactory
             } else {
                 $entity->setBookedBy(null);
                 $entity->setBookedAt(null);
+                $entity->setBookedOn(null);
                 $entity->setDiscipline(null);
                 $entity->setBookingDelay(null);
                 $entity->setReserved(false);
