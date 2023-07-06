@@ -57,7 +57,9 @@ class AccountRepository extends ServiceEntityRepository
      */
     public function findAllFilteredQuery(Request $request): array
     {
-        $query = $this->createQueryBuilder('a');
+        $query = $this->createQueryBuilder('a')
+            ->select('a, u')
+            ->innerJoin('a.user', 'u');
 
         $data = $request->query->all();
 
