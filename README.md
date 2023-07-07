@@ -1,5 +1,10 @@
 # Api BookCamp
 
+Api live
+-----
+Api disponible à cette adresse : https://bookcamp.keepvibz.ovh/api  
+Documentation : https://documenter.getpostman.com/view/17771184/2s93sc3sDu
+
 Prérequis
 ------------
 
@@ -39,11 +44,6 @@ symfony serve
 ```
 
 **2** Requêter l'api à l'URL donnée (<http://localhost:8000> par défaut).
-
-Api live
------
-Api disponible à cette adresse : https://bookcamp.keepvibz.ovh/api  
-Documentation : https://documenter.getpostman.com/view/17771184/2s93sc3sDu
 
 [1]: https://symfony.com/doc/current/best_practices.html
 [2]: https://symfony.com/doc/current/setup.html#technical-requirements
