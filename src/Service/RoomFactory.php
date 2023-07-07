@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Room;
+use App\Entity\User;
 use App\Repository\AccountRepository;
 use App\Repository\DisciplineRepository;
 use App\Repository\RoomRepository;
@@ -32,7 +33,7 @@ class RoomFactory
         return $entity;
     }
 
-    public function update(Room $entity, mixed $data): string|Room
+    public function update(Room $entity, mixed $data, ?User $user): string|Room
     {
         if (!empty($data['caracteristics'])) {
             $entity->setCaracteristics($data['caracteristics']);
@@ -46,7 +47,11 @@ class RoomFactory
             $entity->setStatus($data['status']);
 
             if ($entity->getStatus() === Room::ROOM_STATUS_BOOKED) {
-                $account = $this->accountRepository->find($data['accountId']);
+                if($user) {
+                    $account = $user->getAccount();
+                } else {
+                    $account = $this->accountRepository->find($data['accountId']);
+                }
                 $entity->setBookedBy($account);
                 $entity->setBookedAt(new \DateTime());
                 $entity->setReserved(true);

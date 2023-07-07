@@ -78,6 +78,8 @@ class RoomController extends BaseController
     public function update($id, Request $request): Response
     {
         try {
+            $user = $this->getUser();
+
             $data = json_decode($request->getContent(), true);
             $room = $this->getManagerRegistry()->getRepository(Room::class)->find($id);
 
@@ -85,7 +87,7 @@ class RoomController extends BaseController
                 throw $this->createNotFoundException();
             }
 
-            $this->roomFactory->update($room, $data);
+            $this->roomFactory->update($room, $data, $user);
 
             $this->eventDispatcher->dispatch(new UpdateRoomEvent($room), UpdateRoomEvent::NAME);
 
