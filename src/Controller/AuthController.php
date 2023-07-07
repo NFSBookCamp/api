@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Service\AccountFactory;
 use App\Service\MailerService;
+use App\Service\UserFactory;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,8 +14,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class AuthController extends BaseController
 {
     public function __construct(
-        private MailerService $mailer,
-        private UserPasswordHasherInterface $passwordHasher
+        private MailerService               $mailer,
+        private UserPasswordHasherInterface $passwordHasher,
+        private readonly UserFactory        $userFactory,
+        private readonly AccountFactory     $accountFactory,
     )
     {}
     #[Route('/api/check-email', methods: ['POST'])]
@@ -104,6 +108,38 @@ class AuthController extends BaseController
             ]);
         } catch (\Error $e) {
             return $this->json(['message' => $e]);
+        }
+    }
+
+    #[Route('/api/profile/update', name: 'api_users_update', methods: ['PUT', 'PATCH'])]
+    public function update(Request $request): Response
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            $user = $this->getUser();
+
+            if (!$user) {
+                throw $this->createNotFoundException();
+            }
+
+            $this->userFactory->update($user, $data);
+
+            $account = $user->getAccount();
+
+            if (!$account) {
+                throw $this->createNotFoundException();
+            }
+
+            $this->accountFactory->update($account, $data);
+
+            $response = $this->getApiService()->setResponse($this->getApiService()->handleCircularReference($user));
+
+            $token = $this->getJWTTokenManagerInterface()->create($user);
+            $response->setContent(json_encode(['token' => $token]));
+
+            return $response;
+        } catch (\throwable $e) {
+            return $this->getApiService()->setResponse($e->getMessage(), $e);
         }
     }
 }
