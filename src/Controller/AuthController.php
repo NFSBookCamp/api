@@ -111,7 +111,7 @@ class AuthController extends BaseController
         }
     }
 
-    #[Route('/api/profile/update', name: 'api_users_update', methods: ['PUT', 'PATCH'])]
+    #[Route('/api/profile/update', name: 'api_profile_update', methods: ['PUT', 'PATCH'])]
     public function update(Request $request): Response
     {
         try {
