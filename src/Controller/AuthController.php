@@ -99,12 +99,12 @@ class AuthController extends BaseController
             } else {
                 return $this->json([
                     'error' => true,
-                    'message' => 'Tu dois confirmer ton mot de passe, wesh'
+                    'message' => 'Vous devez confirmer le mot de passe'
                 ]);
             }
 
             return $this->json([
-                'message' => 'Le mot de passe a été modifié, tu peux te reconnecter ;)'
+                'message' => 'Le mot de passe a été modifié, vous pouvez vous reconnecter.)'
             ]);
         } catch (\Error $e) {
             return $this->json(['message' => $e]);
