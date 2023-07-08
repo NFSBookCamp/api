@@ -34,13 +34,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, DatedIn
      */
     #[ORM\Column]
     #[Assert\NotBlank(message: "Cette valeur ne peut pas être vide")]
+    #[Assert\NotCompromisedPassword]
     #[Assert\Regex(
         pattern: "/^(?=.*\d)(?=.*[A-Z])(?=.*[@#$%])(?!.*(.)\1{2}).*[a-z]/m",
         message: "Votre mot de passe doit comporter au moins huit caractères, dont des lettres majuscules et minuscules, un chiffre et un symbole.",
         match: true
     )]
     private ?string $password = null;
-
     #[Assert\NotBlank(message: "Cette valeur ne peut pas être vide")]
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Account $account = null;
