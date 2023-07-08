@@ -134,10 +134,26 @@ class AuthController extends BaseController
 
             $response = $this->getApiService()->setResponse($this->getApiService()->handleCircularReference($user));
 
-            $token = $this->getJWTTokenManagerInterface()->create($user);
-            $response->setContent(json_encode(['token' => $token]));
+//            $token = $this->getJWTTokenManagerInterface()->create($user);
+//            $response->setContent(json_encode(['token' => $token]));
 
             return $response;
+        } catch (\throwable $e) {
+            return $this->getApiService()->setResponse($e->getMessage(), $e);
+        }
+    }
+
+    #[Route('/api/user', name: 'app_get_user', methods: ['GET'])]
+    public function getAuthenticatedUser(): Response
+    {
+        try {
+            $user = $this->getUser();
+
+            if (!$user) {
+                throw $this->createNotFoundException();
+            }
+
+            return $this->getApiService()->setResponse($this->getApiService()->handleCircularReference($user));
         } catch (\throwable $e) {
             return $this->getApiService()->setResponse($e->getMessage(), $e);
         }

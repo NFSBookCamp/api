@@ -52,7 +52,7 @@ class UserFactory
             $entity->setRoles($data['roles']);
         }
 
-        if (!empty($data['plainPassword'])) {
+        if (!empty($data['new_password'])) {
             if (!$this->passwordHasher->isPasswordValid($entity, $data['password'])) {
                 throw new AccessDeniedHttpException('L\'ancien mot de passe est incorrect');
             } else {
